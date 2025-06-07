@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>martian.pink</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --background-color: #1a020d; /* Um roxo-escuro quase preto */
+            --primary-color: #ff3385; /* O "Pink" do martian.pink */
+            --text-color: #e0e0e0;
+            --font-family: 'Share Tech Mono', monospace;
+        }
+
+        body {
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-family: var(--font-family);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+            text-align: center;
+            overflow: hidden;
+            background-image: radial-gradient(white, rgba(255,255,255,.2) 2px, transparent 40px),
+                              radial-gradient(white, rgba(255,255,255,.15) 1px, transparent 30px),
+                              radial-gradient(white, rgba(255,255,255,.1) 2px, transparent 40px),
+                              radial-gradient(rgba(255,255,255,.4), rgba(255,255,255,.1) 2px, transparent 30px);
+            background-size: 550px 550px, 350px 350px, 250px 250px, 150px 150px; 
+            background-position: 0 0, 40px 60px, 130px 270px, 70px 100px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            border: 1px solid var(--primary-color);
+            padding: 30px;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            box-shadow: 0 0 20px var(--primary-color);
+        }
+
+        h1, h2, p {
+            margin: 10px 0;
+            text-shadow: 0 0 5px var(--primary-color);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            font-size: 2em;
+            letter-spacing: 4px;
+        }
+
+        .puzzle-section {
+            display: none; /* All puzzles are hidden by default */
+        }
+
+        #puzzle1 {
+            display: block; /* The first puzzle is visible */
+        }
+        
+        input[type="text"] {
+            background-color: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--text-color);
+            padding: 10px;
+            font-family: var(--font-family);
+            width: 80%;
+            max-width: 300px;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 1.1em;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            box-shadow: 0 0 10px var(--primary-color);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            border: none;
+            color: var(--background-color);
+            padding: 10px 20px;
+            font-family: var(--font-family);
+            font-size: 1.1em;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: var(--text-color);
+            box-shadow: 0 0 15px var(--primary-color);
+        }
+        
+        .error-message {
+            color: #ff4d4d;
+            margin-top: 15px;
+            height: 20px;
+        }
+
+        .monolith {
+            background-color: #000;
+            width: 100px;
+            height: 300px;
+            margin: 20px auto;
+            border: 1px solid #333;
+            color: #000; /* This makes the text inside invisible */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5em;
+            user-select: text; /* Allows text selection */
+        }
+
+        /* Final Content Styling */
+        #final-content {
+            display: none;
+        }
+
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .photo-placeholder {
+            width: 100%;
+            height: 120px;
+            background-color: rgba(255, 51, 133, 0.1);
+            border: 1px dashed var(--primary-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-size: 0.9em;
+        }
+        
+        .email-list a {
+            color: var(--primary-color);
+            text-decoration: none;
+            display: inline-block;
+            margin: 5px 10px;
+            transition: all 0.3s ease;
+        }
+
+        .email-list a:hover {
+            text-shadow: 0 0 10px var(--text-color);
+            transform: scale(1.1);
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- PUZZLE 1: EASY -->
+        <div id="puzzle1" class="puzzle-section">
+            <h1>SIGNAL INTERCEPTED</h1>
+            <p>Source: martian.pink</p>
+            <p>Transmission requires an entry key to decrypt. Please identify the mission designation.</p>
+            <input type="text" id="answer1" placeholder="Enter Key...">
+            <br>
+            <button onclick="checkPuzzle1()">DECRYPT</button>
+            <p id="error1" class="error-message"></p>
+        </div>
+
+        <!-- PUZZLE 2: MEDIUM -->
+        <div id="puzzle2" class="puzzle-section">
+            <h2>LEVEL 1 CLEARANCE GRANTED</h2>
+            <p>The next layer of data is protected by the crew's bio-signature.</p>
+            <p>To proceed, calculate the sum of the crew's designation values (F, V, T, S).<br>(A=1, B=2, C=3...)</p>
+            <input type="text" id="answer2" placeholder="Enter Numeric Signature...">
+            <br>
+            <button onclick="checkPuzzle2()">VERIFY</button>
+            <p id="error2" class="error-message"></p>
+        </div>
+
+        <!-- PUZZLE 3: HARD -->
+        <div id="puzzle3" class="puzzle-section">
+            <h2>LEVEL 2 CLEARANCE GRANTED</h2>
+            <p>//TRANSMISSION CORRUPTED... INITIATING DIAGNOSTICS...</p>
+            <p>A strange artifact is interfering with the signal. Final alignment key is required.</p>
+            <p>Hint: Check the diagnostic console for clues about the monolith.</p>
+            <div class="monolith">ODYSSEY</div>
+            <input type="text" id="answer3" placeholder="Enter Final Key...">
+            <br>
+            <button onclick="checkPuzzle3()">ALIGN</button>
+            <p id="error3" class="error-message"></p>
+        </div>
+
+        <!-- FINAL REWARD CONTENT -->
+        <div id="final-content" class="puzzle-section">
+            <h1>TRANSMISSION DECODED</h1>
+            <p>Congratulations, explorer! You've successfully navigated our little challenge.</p>
+            <p>We are the crew of the martian.pink mission: Fabio, Vanessa, Tito, and Sofia. Welcome to our small corner of the universe. It's a pleasure to have you here.</p>
+            
+            <div class="email-list">
+                <h3>Contact the Crew:</h3>
+                <!-- **INSTRUÇÃO**: Substitua os # pelos seus links de email -->
+                <a href="mailto:fabio@martian.pink">Fabio</a>
+                <a href="mailto:vanessa@martian.pink">Vanessa</a>
+                <a href="mailto:tito@martian.pink">Tito</a>
+                <a href="mailto:sofia@martian.pink">Sofia</a>
+            </div>
+
+            <div class="photo-grid">
+                <!-- **INSTRUÇÃO**: Substitua estes divs por suas tags <img> -->
+                <div class="photo-placeholder">
+                    <span>Photo 1</span>
+                    <span>(Fabio)</span>
+                </div>
+                <div class="photo-placeholder">
+                    <span>Photo 2</span>
+                    <span>(Vanessa)</span>
+                </div>
+                <div class="photo-placeholder">
+                    <span>Photo 3</span>
+                    <span>(Tito)</span>
+                </div>
+                <div class="photo-placeholder">
+                    <span>Photo 4</span>
+                    <span>(Sofia)</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Clue for Puzzle 3, hidden in the developer console.
+        console.log("DIAGNOSTIC LOG: The final alignment key is hidden in plain sight, on the 'dark side' of the monolith.");
+
+        function showSection(sectionId) {
+            document.querySelectorAll('.puzzle-section').forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById(sectionId).style.display = 'block';
+        }
+
+        function checkPuzzle1() {
+            const answer = document.getElementById('answer1').value.trim().toLowerCase();
+            const error = document.getElementById('error1');
+            if (answer === 'martian pink') {
+                showSection('puzzle2');
+            } else {
+                error.textContent = 'ACCESS DENIED. KEY INCORRECT.';
+            }
+        }
+
+        function checkPuzzle2() {
+            const answer = document.getElementById('answer2').value.trim();
+            const error = document.getElementById('error2');
+            // F(6) + V(22) + T(20) + S(19) = 67
+            if (answer === '67') {
+                showSection('puzzle3');
+            } else {
+                error.textContent = 'SIGNATURE INVALID.';
+            }
+        }
+
+        function checkPuzzle3() {
+            const answer = document.getElementById('answer3').value.trim().toLowerCase();
+            const error = document.getElementById('error3');
+            if (answer === 'odyssey') {
+                showSection('final-content');
+            } else {
+                error.textContent = 'ALIGNMENT FAILED. KEY MISMATCH.';
+            }
+        }
+        
+        // Allow pressing Enter to submit
+        document.getElementById('answer1').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                checkPuzzle1();
+            }
+        });
+         document.getElementById('answer2').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                checkPuzzle2();
+            }
+        });
+         document.getElementById('answer3').addEventListener('keyup', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                checkPuzzle3();
+            }
+        });
+
+    </script>
+</body>
+</html>
