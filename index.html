@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MARTIAN CONTACT PROTOCOL</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a1a 50%, #2a0a2a 100%);
+            color: #ff69b4;
+            font-family: 'Orbitron', monospace;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .star {
+            position: absolute;
+            background: #ff69b4;
+            border-radius: 50%;
+            animation: twinkle 2s infinite alternate;
+        }
+        
+        @keyframes twinkle {
+            0% { opacity: 0.3; transform: scale(1); }
+            100% { opacity: 1; transform: scale(1.2); }
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from { text-shadow: 0 0 20px #ff69b4; }
+            to { text-shadow: 0 0 30px #ff1493, 0 0 40px #ff1493; }
+        }
+        
+        .ascii-art {
+            font-family: monospace;
+            font-size: 12px;
+            line-height: 1;
+            white-space: pre;
+            text-align: center;
+            margin: 20px 0;
+            color: #ff1493;
+        }
+        
+        .terminal {
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid #ff69b4;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.3);
+        }
+        
+        .puzzle-section {
+            display: none;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        .puzzle-section.active {
+            display: block;
+        }
+        
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .cipher-grid {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+            justify-items: center;
+        }
+        
+        .cipher-symbol {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 105, 180, 0.2);
+            border: 1px solid #ff69b4;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 18px;
+        }
+        
+        .cipher-symbol:hover {
+            background: rgba(255, 105, 180, 0.4);
+            transform: scale(1.1);
+        }
+        
+        .constellation {
+            position: relative;
+            height: 300px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .constellation-star {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: #ff69b4;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 0 10px #ff69b4;
+        }
+        
+        .constellation-star:hover {
+            transform: scale(1.5);
+            background: #ff1493;
+        }
+        
+        .constellation-star.clicked {
+            background: #00ff00;
+            animation: pulse 1s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        input[type="text"] {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid #ff69b4;
+            color: #ff69b4;
+            padding: 10px;
+            font-family: 'Orbitron', monospace;
+            border-radius: 5px;
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        button {
+            background: linear-gradient(45deg, #ff69b4, #ff1493);
+            border: none;
+            color: white;
+            padding: 12px 24px;
+            font-family: 'Orbitron', monospace;
+            font-weight: bold;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.4);
+        }
+        
+        .success-section {
+            display: none;
+            text-align: center;
+            padding: 40px;
+            background: linear-gradient(45deg, rgba(255, 105, 180, 0.2), rgba(255, 20, 147, 0.2));
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+        
+        .family-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .family-member {
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid #ff69b4;
+            border-radius: 15px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        
+        .family-member:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(255, 105, 180, 0.3);
+        }
+        
+        .nft-placeholder {
+            width: 150px;
+            height: 150px;
+            background: linear-gradient(45deg, #ff69b4, #ff1493);
+            border-radius: 15px;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 60px;
+        }
+        
+        .error {
+            color: #ff4444;
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
+        .hint {
+            font-size: 12px;
+            color: #ff69b4;
+            opacity: 0.7;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="stars" id="stars"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>MARTIAN CONTACT PROTOCOL</h1>
+            <div class="ascii-art">
+    ░▒▓█▓▒░▒▓█▓▒░░▒▓██████▓▒░░▒▓███████▓▒░▒▓████████▓▒░▒▓█▓▒░░▒▓██████▓▒░░▒▓███████▓▒░  
+    ░▒▓█▓▒░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░   ░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ 
+    ░▒▓█▓▒▒▓█▓▒░░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░   ░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ 
+    ░▒▓█▓▒▒▓█▓▒░░▒▓████████▓▒░▒▓███████▓▒░  ░▒▓█▓▒░   ░▒▓█▓▒░▒▓████████▓▒░▒▓█▓▒░░▒▓█▓▒░ 
+    ░▒▓█▓▓█▓▒░   ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░   ░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ 
+    ░▒▓██▓▒░     ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░   ░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ 
+    ░▒▓█▓▒░      ░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░ ░▒▓█▓▒░   ░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░▒▓█▓▒░░▒▓█▓▒░
+            </div>
+        </div>
+
+        <!-- Stage 1: Initial Transmission -->
+        <div class="puzzle-section active" id="stage1">
+            <div class="terminal">
+                <h2>║ INCOMING TRANSMISSION ║</h2>
+                <p>Status: ENCRYPTED SIGNAL DETECTED</p>
+                <p>Origin: COORDINATES [CLASSIFIED]</p>
+                <p>Protocol: PINK-CIPHER-ALPHA</p>
+                <br>
+                <div class="ascii-art">
+        .-""""""-.
+       /          \
+      |  .-""""-.  |
+      | /        \ |
+      |/          \|
+      |\          /|
+      | \        / |
+      |  '-.__..-'  |
+       \            /
+        '-.______.-'
+        MARS CALLING
+                </div>
+                <p>⚠ CLASSIFIED CONTENT DETECTED ⚠</p>
+                <p>The following cipher contains coordinates to family archives.</p>
+                <p>Decode the sequence to proceed:</p>
+                
+                <div class="cipher-grid" id="cipherGrid">
+                    <div class="cipher-symbol" data-value="6">♠</div>
+                    <div class="cipher-symbol" data-value="1">♦</div>
+                    <div class="cipher-symbol" data-value="2">♣</div>
+                    <div class="cipher-symbol" data-value="9">♥</div>
+                    <div class="cipher-symbol" data-value="15">☾</div>
+                    <div class="cipher-symbol" data-value="3">✦</div>
+                    <div class="cipher-symbol" data-value="19">⊙</div>
+                    <div class="cipher-symbol" data-value="22">※</div>
+                </div>
+                
+                <p>Pattern: Each symbol represents a Fibonacci sequence position</p>
+                <p>Enter the decoded sequence (8 digits):</p>
+                <input type="text" id="cipherInput" placeholder="Enter sequence...">
+                <button onclick="checkCipher()">DECODE TRANSMISSION</button>
+                <div class="hint">Hint: ♦=1st Fibonacci, ♣=2nd Fibonacci, ✦=3rd Fibonacci... What are positions 1,2,3,4,5,6,7,8?</div>
+                <p id="cipherResult"></p>
+            </div>
+        </div>
+
+        <!-- Stage 2: Constellation Navigation -->
+        <div class="puzzle-section" id="stage2">
+            <div class="terminal">
+                <h2>║ NAVIGATION PROTOCOL ACTIVE ║</h2>
+                <p>Transmission decoded successfully.</p>
+                <p>Accessing stellar navigation system...</p>
+                <br>
+                <p>Click the constellation stars in the correct sequence.</p>
+                <p>The sequence spells out the family initials in star positions.</p>
+                
+                <div class="constellation" id="constellation">
+                    <!-- Stars will be positioned to spell F-V-T-S -->
+                    <!-- F shape -->
+                    <div class="constellation-star" data-order="1" style="top: 50px; left: 100px;"></div>
+                    <div class="constellation-star" data-order="2" style="top: 50px; left: 130px;"></div>
+                    <div class="constellation-star" data-order="3" style="top: 50px; left: 160px;"></div>
+                    <div class="constellation-star" data-order="4" style="top: 80px; left: 100px;"></div>
+                    <div class="constellation-star" data-order="5" style="top: 110px; left: 100px;"></div>
+                    <div class="constellation-star" data-order="6" style="top: 110px; left: 130px;"></div>
+                    <div class="constellation-star" data-order="7" style="top: 140px; left: 100px;"></div>
+                    
+                    <!-- V shape -->
+                    <div class="constellation-star" data-order="8" style="top: 50px; left: 250px;"></div>
+                    <div class="constellation-star" data-order="9" style="top: 80px; left: 260px;"></div>
+                    <div class="constellation-star" data-order="10" style="top: 110px; left: 270px;"></div>
+                    <div class="constellation-star" data-order="11" style="top: 140px; left: 280px;"></div>
+                    <div class="constellation-star" data-order="12" style="top: 110px; left: 290px;"></div>
+                    <div class="constellation-star" data-order="13" style="top: 80px; left: 300px;"></div>
+                    <div class="constellation-star" data-order="14" style="top: 50px; left: 310px;"></div>
+                    
+                    <!-- T shape -->
+                    <div class="constellation-star" data-order="15" style="top: 50px; left: 400px;"></div>
+                    <div class="constellation-star" data-order="16" style="top: 50px; left: 430px;"></div>
+                    <div class="constellation-star" data-order="17" style="top: 50px; left: 460px;"></div>
+                    <div class="constellation-star" data-order="18" style="top: 80px; left: 430px;"></div>
+                    <div class="constellation-star" data-order="19" style="top: 110px; left: 430px;"></div>
+                    <div class="constellation-star" data-order="20" style="top: 140px; left: 430px;"></div>
+                    
+                    <!-- S shape -->
+                    <div class="constellation-star" data-order="21" style="top: 50px; left: 550px;"></div>
+                    <div class="constellation-star" data-order="22" style="top: 50px; left: 580px;"></div>
+                    <div class="constellation-star" data-order="23" style="top: 80px; left: 550px;"></div>
+                    <div class="constellation-star" data-order="24" style="top: 110px; left: 580px;"></div>
+                    <div class="constellation-star" data-order="25" style="top: 140px; left: 550px;"></div>
+                    <div class="constellation-star" data-order="26" style="top: 140px; left: 580px;"></div>
+                </div>
+                
+                <p>Progress: <span id="constellationProgress">0/26</span> stars activated</p>
+                <div class="hint">Hint: The stars form letters F-V-T-S. Click them in order to spell each letter from top to bottom, left to right.</div>
+                <button onclick="resetConstellation()">RESET SEQUENCE</button>
+                <p id="constellationResult"></p>
+            </div>
+        </div>
+
+        <!-- Stage 3: Final Authentication -->
+        <div class="puzzle-section" id="stage3">
+            <div class="terminal">
+                <h2>║ FINAL AUTHENTICATION REQUIRED ║</h2>
+                <p>Stellar navigation complete.</p>
+                <p>Accessing family database...</p>
+                <br>
+                <div class="ascii-art">
+     _____
+    /     \
+   | () () |
+    \  ^  /
+     |||||
+     |||||
+    
+    PINK GUARDIAN
+                </div>
+                <p>Enter the family access code:</p>
+                <p>Clue: What connects all Martians? The color that binds us in the void.</p>
+                <input type="text" id="finalInput" placeholder="Enter code...">
+                <button onclick="checkFinalCode()">AUTHENTICATE</button>
+                <div class="hint">Hint: Think about the domain name and what makes this family special...</div>
+                <p id="finalResult"></p>
+            </div>
+        </div>
+
+        <!-- Success Section -->
+        <div class="success-section" id="successSection">
+            <h2>║ ACCESS GRANTED ║</h2>
+            <div class="ascii-art">
+    ╔═══════════════════════════════════════╗
+    ║        MARTIAN FAMILY NETWORK         ║
+    ║              ACTIVATED                ║
+    ╚═══════════════════════════════════════╝
+            </div>
+            <p>Welcome to the family archive!</p>
+            
+            <div class="family-grid">
+                <div class="family-member">
+                    <div class="nft-placeholder">🐵</div>
+                    <h3>FABIO-ALPHA</h3>
+                    <p>Mission Commander</p>
+                    <p>Contact: fabio@martian.pink</p>
+                </div>
+                <div class="family-member">
+                    <div class="nft-placeholder">🐵</div>
+                    <h3>VANESSA-BETA</h3>
+                    <p>Communications Officer</p>
+                    <p>Contact: vanessa@martian.pink</p>
+                </div>
+                <div class="family-member">
+                    <div class="nft-placeholder">🐵</div>
+                    <h3>TITO-GAMMA</h3>
+                    <p>Navigation Specialist</p>
+                    <p>Contact: tito@martian.pink</p>
+                </div>
+                <div class="family-member">
+                    <div class="nft-placeholder">🐵</div>
+                    <h3>SOFIA-DELTA</h3>
+                    <p>Tech Analyst</p>
+                    <p>Contact: sofia@martian.pink</p>
+                </div>
+            </div>
+            
+            <p style="margin-top: 30px; font-style: italic;">
+                "Four minds, one mission. The pink transmission continues across the cosmos."
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Create animated stars background
+        function createStars() {
+            const starsContainer = document.getElementById('stars');
+            for (let i = 0; i < 100; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                star.style.left = Math.random() * 100 + '%';
+                star.style.top = Math.random() * 100 + '%';
+                star.style.width = Math.random() * 3 + 1 + 'px';
+                star.style.height = star.style.width;
+                star.style.animationDelay = Math.random() * 2 + 's';
+                starsContainer.appendChild(star);
+            }
+        }
+
+        // Stage 1: Cipher puzzle
+        function checkCipher() {
+            const input = document.getElementById('cipherInput').value;
+            const result = document.getElementById('cipherResult');
+            
+            // Fibonacci sequence: 1,1,2,3,5,8,13,21
+            const correctAnswer = '11235813';
+            
+            if (input === correctAnswer) {
+                result.innerHTML = '<span style="color: #00ff00;">✓ TRANSMISSION DECODED! Advancing to navigation...</span>';
+                setTimeout(() => {
+                    document.getElementById('stage1').classList.remove('active');
+                    document.getElementById('stage2').classList.add('active');
+                }, 2000);
+            } else {
+                result.innerHTML = '<span class="error">✗ INVALID SEQUENCE. Try again.</span>';
+            }
+        }
+
+        // Stage 2: Constellation puzzle
+        let constellationOrder = [];
+        const correctConstellationOrder = Array.from({length: 26}, (_, i) => i + 1);
+
+        function setupConstellation() {
+            const stars = document.querySelectorAll('.constellation-star');
+            stars.forEach(star => {
+                star.addEventListener('click', function() {
+                    const order = parseInt(this.dataset.order);
+                    const expectedNext = constellationOrder.length + 1;
+                    
+                    if (order === expectedNext) {
+                        this.classList.add('clicked');
+                        constellationOrder.push(order);
+                        updateConstellationProgress();
+                        
+                        if (constellationOrder.length === 26) {
+                            setTimeout(() => {
+                                document.getElementById('constellationResult').innerHTML = 
+                                    '<span style="color: #00ff00;">✓ NAVIGATION COMPLETE! Proceeding to authentication...</span>';
+                                setTimeout(() => {
+                                    document.getElementById('stage2').classList.remove('active');
+                                    document.getElementById('stage3').classList.add('active');
+                                }, 2000);
+                            }, 500);
+                        }
+                    } else {
+                        // Wrong order - shake the star and reset
+                        this.style.animation = 'shake 0.5s ease-in-out';
+                        setTimeout(() => {
+                            this.style.animation = '';
+                            resetConstellation();
+                        }, 500);
+                    }
+                });
+            });
+        }
+
+        function updateConstellationProgress() {
+            document.getElementById('constellationProgress').textContent = `${constellationOrder.length}/26`;
+        }
+
+        function resetConstellation() {
+            constellationOrder = [];
+            const stars = document.querySelectorAll('.constellation-star');
+            stars.forEach(star => {
+                star.classList.remove('clicked');
+            });
+            updateConstellationProgress();
+        }
+
+        // Stage 3: Final authentication
+        function checkFinalCode() {
+            const input = document.getElementById('finalInput').value.toLowerCase();
+            const result = document.getElementById('finalResult');
+            
+            const correctAnswers = ['pink', 'martian', 'martianpink', 'martian.pink'];
+            
+            if (correctAnswers.includes(input)) {
+                result.innerHTML = '<span style="color: #00ff00;">✓ AUTHENTICATION SUCCESSFUL! Welcome to the family network!</span>';
+                setTimeout(() => {
+                    document.getElementById('stage3').classList.remove('active');
+                    document.getElementById('successSection').style.display = 'block';
+                }, 2000);
+            } else {
+                result.innerHTML = '<span class="error">✗ ACCESS DENIED. Incorrect family code.</span>';
+            }
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            createStars();
+            setupConstellation();
+            
+            // Allow Enter key for inputs
+            document.getElementById('cipherInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') checkCipher();
+            });
+            
+            document.getElementById('finalInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') checkFinalCode();
+            });
+        });
+    </script>
+</body>
+</html>
